@@ -21,9 +21,6 @@ This web app server is inspired from the code proposed in
 
 ## Notes
 
-### Installing the "data" package
-
-Copy the data directory into your local sdk/goXXX/src directory
 
 ## References
 

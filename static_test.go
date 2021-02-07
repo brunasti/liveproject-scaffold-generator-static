@@ -2,12 +2,33 @@ package main
 
 import (
 	"fmt"
+	"net/http/httptest"
 	"os"
 	"testing"
 )
 
 var testCounter = 0
 var testSuccess = 0
+
+func TestHealthCheck(t *testing.T) {
+	testCounter++
+
+	r := httptest.NewRequest("GET", "/foo", nil)
+	w := httptest.NewRecorder()
+	healthCheck(w, r)
+
+	if w.Code != 200 {
+		t.Fatalf("Expected %d return code, but got %d instead", 200, w.Code)
+	}
+
+	if w.Body.String() != "ok" {
+		t.Fatalf("Expected %v body, but got %v instead", "ok", w.Body.String())
+	}
+
+	if !t.Failed() {
+		testSuccess++
+	}
+}
 
 // -----------------------------------------------------------------
 func TestMain(m *testing.M) {
