@@ -13,9 +13,7 @@ func main() {
 
 	mux.HandleFunc("/healthcheck", healthCheck)
 
-	files := http.FileServer(http.Dir("./public"))
-	fmt.Println("Static files directory : ", &files)
-	mux.Handle("/", files)
+	mux.HandleFunc("/", serveContent)
 
 	server := &http.Server{
 		Addr:    "0.0.0.0:8080",
@@ -38,28 +36,15 @@ func healthCheck(writer http.ResponseWriter, request *http.Request) {
 	}
 }
 
-//func index(w http.ResponseWriter, r *http.Request) {
-//	log.Printf("/ [%v]\n", r.URL.Path[1:])
-//
-//	//files := []string{"templates/layout.html",
-//	//	"templates/public.navbar.html",
-//	//	"templates/index.html"}
-//	//
-//	//templateFiles, err := template.ParseFiles(files...)
-//	//if err != nil {
-//	//	log.Printf("/ [%v] - Error retrieving files [%v]\n", r.URL.Path[1:], err)
-//	//	return
-//	//}
-//	//templates := template.Must(templateFiles, err)
-//	//
-//	//// TODO Create content
-//	//var threads = [1]Thread{}
-//	//
-//	//err = templates.ExecuteTemplate(w, "layout", threads)
-//
-//	if err != nil {
-//		log.Printf("/ [%v] - Error providing file [%v]\n", r.URL.Path[1:], err)
-//		return
-//	}
-//
-//}
+func serveContent(writer http.ResponseWriter, request *http.Request) {
+	log.Printf("[%v]\n", request.URL.Path)
+	p := request.URL.Path
+	if p == "/" {
+		p = "./public/index.html"
+	} else {
+		p = "./public" + p
+	}
+
+	log.Printf("Serving content [%v]\n", p)
+	http.ServeFile(writer, request, p)
+}
