@@ -25,11 +25,12 @@ func main() {
 
 	mux.HandleFunc("/", index)
 
+	mux.HandleFunc("/healthcheck", healthCheck)
+
 	server := &http.Server{
 		Addr:    "0.0.0.0:8080",
 		Handler: mux,
 	}
-	//server.ListenAndServe()
 
 	err := server.ListenAndServe()
 	if err != nil {
@@ -37,6 +38,14 @@ func main() {
 	}
 	fmt.Println(appName + " -------- end")
 
+}
+
+func healthCheck(writer http.ResponseWriter, request *http.Request) {
+	log.Printf("/healthcheck [%v]\n", request.URL.Path[1:])
+	n, err := fmt.Fprintf(writer, "ok")
+	if err != nil {
+		log.Printf("/healthcheck - Error processing [%v][%d]\n", err, n)
+	}
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
@@ -47,13 +56,19 @@ func index(w http.ResponseWriter, r *http.Request) {
 
 	templateFiles, err := template.ParseFiles(files...)
 	if err != nil {
-		log.Printf("/ [%v] - Error processing [%v]\n", r.URL.Path[1:], err)
+		log.Printf("/ [%v] - Error retrieving files [%v]\n", r.URL.Path[1:], err)
 		return
 	}
 	templates := template.Must(templateFiles, err)
 
+	// TODO Create content
 	var threads = [1]Thread{}
 
-	templates.ExecuteTemplate(w, "layout", threads)
+	err = templates.ExecuteTemplate(w, "layout", threads)
+
+	if err != nil {
+		log.Printf("/ [%v] - Error executing template [%v]\n", r.URL.Path[1:], err)
+		return
+	}
 
 }
