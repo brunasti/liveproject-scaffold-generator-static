@@ -1,10 +1,18 @@
 package main
 
 import (
-	"data"
 	"html/template"
 	"net/http"
+	"time"
 )
+
+type Thread struct {
+	Id        int
+	Uuid      string
+	Topic     string
+	UserId    int
+	CreatedAt time.Time
+}
 
 func main() {
 
@@ -23,12 +31,12 @@ func main() {
 
 func index(w http.ResponseWriter, r *http.Request) {
 	files := []string{"templates/layout.html",
-		"templates/navbar.html",
+		"templates/public.navbar.html",
 		"templates/index.html"}
 	templates := template.Must(template.ParseFiles(files...))
-	threads, err := data.Threads()
-	if err == nil {
 
-		templates.ExecuteTemplate(w, "layout", threads)
-	}
+	var threads = [1]Thread{}
+
+	templates.ExecuteTemplate(w, "layout", threads)
+
 }

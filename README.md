@@ -16,9 +16,14 @@ This project is for the static website one
 
 ### Notes
 
+#### Installing the "data" package
+
+Copy the data directory into your local sdk/goXXX/src directory
+
 ### References
 
 #### Handling the imports
 
 https://scene-si.org/2018/01/25/go-tips-and-tricks-almost-everything-about-imports/
 
+https://medium.com/@adiach3nko/package-management-with-go-modules-the-pragmatic-guide-c831b4eaaf31
